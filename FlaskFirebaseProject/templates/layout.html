@@ -26,11 +26,17 @@
 	<!-- Navigation Bar -->
 	<div class="navbar">
 		<ul class="nav-ul">
+			<!-- Navbar Left Side -->
 			<li class="nav-li nav-li-left nav-li-brand"><a href="{{url_for('home')}}">Flask Firebase Project</a></li>
 			<li class="nav-li nav-li-left"><a href="{{url_for('home')}}">Home</a></li>
 			<li class="nav-li nav-li-left"><a href="{{url_for('about')}}">About</a></li>
-			<li class="nav-li nav-li-right"><a href="{{url_for('login')}}">Log In</a></li>
-			<li class="nav-li nav-li-right"><a href="{{url_for('signup')}}">Sign Up</a></li>
+			<!-- Navbar Right Side -->
+			{% if login_session["name"] != None %}
+				<li class="nav-li nav-li-right"><a href="{{url_for('logout')}}">Log Out</a></li>
+			{% else %}
+				<li class="nav-li nav-li-right"><a href="{{url_for('login')}}">Log In</a></li>
+				<li class="nav-li nav-li-right"><a href="{{url_for('signup')}}">Sign Up</a></li>
+			{% endif %}
 		</ul>
 	</div>
 
