@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block headContent %}
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='signupstyle.css') }}">
+{% endblock headContent %}
+
+{% block bodyContent %}
+	<div class="content-section">
+		<h1>Log In</h1>
+		<form method="POST" action="">
+		    
+			<p>Please fill in this form to log into your account.</p>
+			<hr>	
+			
+			<label for="email"><b>Email</b></label>
+			<input type="text" placeholder="Enter Email" name="email" required>
+
+			<label for="psw"><b>Password</b></label>
+			<input type="password" placeholder="Enter Password" name="psw" required>
+			
+			<label>
+			  <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Remember me
+			</label>
+	
+			<button type="submit" class="loginbtn">Log In</button>
+
+		</form>
+		<small>Don't Have An Account? <a href="{{url_for('signup')}}">Sign Up</small>
+	</div>
+{% endblock bodyContent %}
