@@ -2,6 +2,21 @@ from flask import Flask, render_template, url_for, flash, jsonify, request, redi
 from forms import *
 import random
 import requests,json
+import pyrebase
+
+firebaseConfig = {
+  apiKey: "AIzaSyCD01SvtNWxOV_Mip7vOl3U374nXfzgrlU",
+  authDomain: "flaskfirebase-db196.firebaseapp.com",
+  projectId: "flaskfirebase-db196",
+  storageBucket: "flaskfirebase-db196.appspot.com",
+  messagingSenderId: "588875081912",
+  appId: "1:588875081912:web:b88f8965a8f84b62f52c4d",
+  measurementId: "G-H2MQD00P28"
+}
+
+firebase = pyrebase.initialize_app(firebaseConfig)
+auth = firebase.auth()
+
 
 app = Flask(  # Create a flask app
 	__name__,
