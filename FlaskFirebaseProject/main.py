@@ -13,11 +13,12 @@ firebaseConfig = {
   "messagingSenderId": "588875081912",
   "appId": "1:588875081912:web:b88f8965a8f84b62f52c4d",
   "measurementId": "G-H2MQD00P28",
-  "databaseURL": ""
+  "databaseURL": "https://flaskfirebase-db196-default-rtdb.europe-west1.firebasedatabase.app"
 }
 
 firebase = pyrebase.initialize_app(firebaseConfig)
 auth = firebase.auth()
+db = firebase.database()
 
 
 app = Flask(  # Create a flask app
@@ -41,14 +42,14 @@ def about():
 
 @app.route('/login', methods=['GET','POST'])
 def login():
-    if login_session["name"] != None:
+    if login_session["user"] != None:
         return redirect(url_for('home'))
     else:        
         if request.method == 'GET':
             return render_template('login.html', login_session = login_session, title = "Log In")
         else:
             try:
-                login_session["name"] = auth.sign_in_with_email_and_password(request.form.get("email"),request.form.get("psw"))
+                login_session["user"] = auth.sign_in_with_email_and_password(request.form.get("email"),request.form.get("psw"))
                 flash(f'Loged In Successfuly!', 'success')
                 return redirect(url_for('home'))
             except:
@@ -63,15 +64,21 @@ def login():
     
 @app.route('/signup', methods=['GET','POST'])
 def signup():
-    if login_session["name"] != None:
+    if login_session["user"] != None:
         return redirect(url_for('home'))
     else:
         if request.method == 'GET':
             return render_template('signup.html', login_session = login_session, title = "Sign Up")
         else:
             try:
-                login_session["name"] = auth.create_user_with_email_and_password(request.form.get("email"),request.form.get("psw"))
-                flash(f'Account created for { request.form.get("username") }!', 'success')
+                login_session["user"] = auth.create_user_with_email_and_password(request.form.get("email"),request.form.get("psw"))
+                fullname = request.form.get("fullname")
+                username = request.form.get("username")
+                email = request.form.get("email")
+                password = request.form.get("psw")
+                user = {"fullname":fullname,"username":username,"email":email,"password":password}
+                db.child("Users").child(login_session["user"]["localId"]).set(user)
+                flash(f'Account created for { username }!', 'success')
                 return redirect(url_for('home'))
             except:
                 flash(f'Check Your Credintials! Invalid Username, Email or Password.', 'danger')
@@ -85,7 +92,7 @@ def signup():
 
 @app.route('/logout')
 def logout():
-    login_session["name"] = None
+    login_session["user"] = None
     auth.current_user = None
     return redirect(url_for('login'))
 
