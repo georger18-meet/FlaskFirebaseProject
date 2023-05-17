@@ -31,12 +31,15 @@
 			<li class="nav-li nav-li-left"><a href="{{url_for('home')}}">Home</a></li>
 			<li class="nav-li nav-li-left"><a href="{{url_for('about')}}">About</a></li>
 			<!-- Navbar Right Side -->
-			{% if login_session["user"] != None %}
-				<li class="nav-li nav-li-right"><a href="{{url_for('logout')}}">Log Out</a></li>
-			{% else %}
-				<li class="nav-li nav-li-right"><a href="{{url_for('login')}}">Log In</a></li>
-				<li class="nav-li nav-li-right"><a href="{{url_for('signup')}}">Sign Up</a></li>
-			{% endif %}
+			<div class="nav-li-right-div">
+				{% if login_session["user"] != None %}
+					<li class="nav-li nav-li-right"><a href="{{url_for('account')}}">Account</a></li>
+					<li class="nav-li nav-li-right"><a href="{{url_for('logout')}}">Log Out</a></li>
+				{% else %}
+					<li class="nav-li nav-li-right"><a href="{{url_for('login')}}">Log In</a></li>
+					<li class="nav-li nav-li-right"><a href="{{url_for('signup')}}">Sign Up</a></li>
+				{% endif %}
+			</div>
 		</ul>
 	</div>
 

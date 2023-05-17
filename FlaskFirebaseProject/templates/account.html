@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+
+{% block headContent %}
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='accountstyle.css') }}">
+{% endblock headContent %}
+
+{% block bodyContent %}
+	<div class="content-section">
+		<div class="media">
+			{% if user['pfp'] == '' %}
+				<img class="rounded-circle account-img" src="{{ url_for('static', filename='pics/default-profile.jpg') }}" alt="profile picture*">
+			{% else %}
+				<img class="rounded-circle account-img" src="{{ user['pfp'] }}" alt="profile picture*">
+			{% endif %}
+			<div class="media-body">
+				<h2>{{ user["username"] }}'s Account</h2>
+				<p>{{ user["email"] }}</p>
+			</div>
+		</div>
+		
+		<h3>Account Info</h3>
+		<form method="POST" action="">
+		    
+			<hr>	
+			
+			<label for="username"><b>Username</b></label>
+			<input type="text" placeholder="{{ user['username'] }}" name="username">	
+			
+			<label for="email"><b>Email</b></label>
+			<input type="text" placeholder="{{ user['email'] }}" name="email">		
+			
+			<label for="pfp"><b>Profile Picture</b></label>
+			<input type="text" placeholder="Insert your desired Profile Image link OR type '0' to Erase" name="pfp">
+	
+			<button type="submit" class="updateaccount">Update</button>
+
+		</form>
+		
+		<hr>
+		
+		<button class="delete_button" onclick="document.getElementById('id01').style.display='block'">Delete Account</button>
+		<!-- <button class="delete_button"><a href="{{url_for('remove')}}">Delete Account</a></button> -->
+		
+		<div id="id01" class="modal">
+			<span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+			<form class="modal-content" method="POST" action="remove">
+				<div class="container">
+				<h1>Confirm Deletion</h1>
+
+				<label for="email"><b>Email</b></label>
+				<input type="text" placeholder="Enter Email" name="email" required>
+			
+				<label for="psw"><b>Password</b></label>
+				<input type="password" placeholder="Enter Password" name="psw" required>
+			
+			
+				<div class="clearfix">
+					<button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
+					<button type="submit" class="confirm_delete_btn">Delete</button>
+				</div>
+				</div>
+			</form>
+		</div>
+		
+	</div>
+{% endblock bodyContent %}
