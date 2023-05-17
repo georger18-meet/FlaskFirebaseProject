@@ -69,18 +69,24 @@ def signup():
         if request.method == 'GET':
             return render_template('signup.html', login_session = login_session, title = "Sign Up")
         else:
-            try:
-                login_session["user"] = auth.create_user_with_email_and_password(request.form.get("email"),request.form.get("psw"))
-                fullname = request.form.get("fullname")
-                username = request.form.get("username")
-                email = request.form.get("email")
-                password = request.form.get("psw")
-                user = {"fullname":fullname,"username":username,"email":email,"password":password,"pfp":""}
-                db.child("Users").child(login_session["user"]["localId"]).set(user)
-                currentUser = db.child("Users").child(login_session['user']['localId']).get().val()
-                flash(f'Account created for { username }!', 'success')
-                return redirect(url_for('home'))
-            except:
+            fullname = request.form.get("fullname")
+            username = request.form.get("username")
+            email = request.form.get("email")
+            password = request.form.get("psw")
+            confirm_psw = request.form.get("confirm-psw")
+            if formpy.ValidateSignUp(username,email,password,confirm_psw):            
+                try:
+                    
+                    login_session["user"] = auth.create_user_with_email_and_password(request.form.get("email"),request.form.get("psw"))
+                    user = {"fullname":fullname,"username":username,"email":email,"password":password,"pfp":""}
+                    db.child("Users").child(login_session["user"]["localId"]).set(user)
+                    currentUser = db.child("Users").child(login_session['user']['localId']).get().val()
+                    flash(f'Account created for { username }!', 'success')
+                    return redirect(url_for('home'))
+                except:
+                    flash(f'Check Your Credintials! Invalid Username, Email or Password.', 'danger')
+                    return render_template('signup.html', login_session = login_session, title = "Sign Up")
+            else:            
                 flash(f'Check Your Credintials! Invalid Username, Email or Password.', 'danger')
                 return render_template('signup.html', login_session = login_session, title = "Sign Up")
 
@@ -100,13 +106,10 @@ def account():
             return render_template('account.html', login_session = login_session, title = "Account", user = currentUser)
         else:
             username = request.form.get("username")
-            email = request.form.get("email")
             pfp = request.form.get("pfp")
             updated = {}
             if username != "":
-                updated["username"] = username            
-            if email != "":
-                updated["email"] = email            
+                updated["username"] = username                       
             if pfp != "":
                 if pfp == "0":
                     updated["pfp"] = ""

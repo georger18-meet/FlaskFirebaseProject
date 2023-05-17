@@ -12,9 +12,4 @@ class ValidationForms:
         else:
             return False    
             
-    def ValidateLogIn(self,email,password):
-        if (email != password):
-            return True
-        else:
-            return False
         
