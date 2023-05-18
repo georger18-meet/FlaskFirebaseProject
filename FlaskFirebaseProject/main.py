@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, flash, jsonify, request, redirect
+from flask import Flask, render_template, url_for, flash, jsonify, request, redirect, abort
 from flask import session as login_session
 from forms import *
 import random
@@ -44,10 +44,12 @@ def home():
     cu = None
     posts = db.child("Posts").get().val()
     allUsers = db.child("Users")
-    if login_session["user"] != None:
-        print (db.child("Users").child(login_session['user']['localId']).get().val())
-        cu = db.child("Users").child(login_session['user']['localId']).get().val()
-    else:
+    try:
+        if login_session["user"] != None:
+            cu = db.child("Users").child(login_session['user']['localId']).get().val()
+        else:
+            cu = None
+    except:
         cu = None
     return render_template('home.html', login_session = login_session, posts = posts, user = cu, db = allUsers)
  
@@ -182,7 +184,7 @@ def new_post():
     if login_session["user"] != None:
         currentUser = db.child("Users").child(login_session['user']['localId']).get().val()
         if request.method == 'GET':
-            return render_template('create_post.html', login_session = login_session, title = "New Post", user = currentUser)
+            return render_template('create_post.html', login_session = login_session, title = "New Post", user = currentUser, newPost = True)
         else:
             title = request.form.get("title")
             content = request.form.get("content")
@@ -193,15 +195,67 @@ def new_post():
             timestamp = nowtoday.strftime("%d/%m/%Y %H:%M:%S")
             post = {"title":title,"content":content,"author":username,"timestamp":timestamp, "uid":userID,"attachedImg":attachedImg}
             print(post)
-            db.child("Posts").push(post)
+            post_ref = db.child("Posts").push(post)
+            post_key = post_ref["name"]
+            db.child("Posts").child(post_key).update({"postId":post_key})
             flash(f'Your post was creted!', 'success')
             return redirect(url_for('home'))
     else:
         return redirect(url_for('home'))
   
+@app.route('/post/<post_id>')
+def post(post_id):
+    if login_session["user"] != None:
+        posts = db.child("Posts").get().val()
+        currentUser = db.child("Users").child(login_session['user']['localId']).get().val()
+        try:
+            post = posts[post_id]
+            print(post)
+            return render_template('post.html', login_session = login_session, user=currentUser, title = post["title"], post = post, db=db)
+        except:
+            abort(404)
+    
+@app.route('/post/<post_id>/update', methods=['GET','POST'])
+def update_post(post_id):
+    if login_session["user"] != None:
+        currentUser = db.child("Users").child(login_session['user']['localId']).get().val()
+        posts = db.child("Posts").get().val()
+        if request.method == 'GET':
+            try:
+                post = posts[post_id]
+                if post["author"] == currentUser["username"]:
+                    return render_template('create_post.html', login_session = login_session, title = "Update Post", post = post, user = currentUser, newPost = False)
+                else:
+                    abort(403)
+            except:
+                abort(403)
+        else:
+            title = request.form.get("title")
+            content = request.form.get("content")
+            attachedImg = request.form.get("img")
+            post_key = request.form.get("custId")
+            updated = {"title":title,"content":content,"attachedImg":attachedImg}
+            db.child("Posts").child(post_key).update(updated)
+            flash(f'Post updated successfuly!', 'success')
+            return redirect(url_for('post',post_id=post_key))
+   
+@app.route('/post/<post_id>/delete')
+def delete_post(post_id):
+    if login_session["user"] != None:
+        currentUser = db.child("Users").child(login_session['user']['localId']).get().val()
+        post = db.child("Users").child(post_id).get().val()
+        try:
+            db.child("Posts").child(post_id).remove()
+            flash(f'Post Deleted Successfuly', 'info')
+            return redirect(url_for('home'))
+        except:
+            return redirect(url_for('home'))
+    else:
+        return redirect(url_for('home'))
 
-     
-if __name__ == "__main__":  # Makes sure this is the main process
+            
+# Makes sure this is the main process
+if __name__ == "__main__":
     app.run( # Starts the site
 		host='0.0.0.0',  # EStablishes the host, required for repl to detect the site
 		port=random.randint(2000, 9000),  # Randomly select the port the machine hosts on.

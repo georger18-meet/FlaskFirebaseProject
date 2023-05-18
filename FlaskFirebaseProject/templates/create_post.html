@@ -6,21 +6,37 @@
 
 {% block bodyContent %}
 	<div class="content-section">
-		<h1>Create New Post</h1>
+		<h1>{{ title }}</h1>
 		<form method="POST" action="">
 		    
 			<hr>
 			
-			<label for="title"><b>Title</b></label>
-			<input type="text" placeholder="Title" name="title" required>			
+			{% if newPost %}
+				<label for="title"><b>Title</b></label>
+				<input type="text" placeholder="Title" name="title" required>			
+				
+				<label for="content"><b>Content</b></label>			
+				<p><textarea class="textarea" placeholder="Content" name="content" maxlength="280" rows="5" required></textarea></p>
+				
+				<label for="img"><b>Attatched Image</b></label>
+				<input type="text" placeholder="Insert Image Link" name="img">
+
+				<button type="submit" class="postbtn">Post</button>				
+			{% else %}
+				<label for="title"><b>Title</b></label>
+				<input type="text" placeholder="Title"  value="{{ post['title'] }}" name="title" required>			
+				
+				<label for="content"><b>Content</b></label>			
+				<p><textarea class="textarea" placeholder="Content"  name="content" maxlength="280" rows="5" required>{{ post['content'] }}</textarea></p>
+				
+				<label for="img"><b>Attatched Image</b></label>
+				<input type="text" placeholder="Insert Image Link" value="{{ post['attachedImg'] }}" name="img">
+
+				<input type="hidden" id="custId" name="custId" value="{{ post['postId'] }}">
+				
+				<button type="submit" class="postbtn">Update</button>
+			{% endif %}
 			
-			<label for="content"><b>Content</b></label>			
-			<p><textarea class="textarea" placeholder="Content" name="content" maxlength="280" rows="5" required></textarea></p>
-			
-			<label for="img"><b>Attatched Image</b></label>
-			<input type="text" placeholder="Insert Image Link" name="img">
-			
-			<button type="submit" class="postbtn">Post</button>
 
 		</form>
 	</div>

@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block headContent %}
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='signupstyle.css') }}">
+{% endblock headContent %}
+
+{% block bodyContent %}
+	{% if post %}
+		<h1>Post: "{{ post['title'] }}"</h1>
+			<article class="media content-section">
+				<div class="media-body">
+				<ul class="article-ul">
+					<li class="article-li">{% if db.child('Users').child(post['uid']).get().val()['pfp'] == '' %}
+						<img class="rounded-circle article-img" src="{{ url_for('static', filename='pics/default-profile.jpg') }}">
+					{% else %}
+						<img class="rounded-circle article-img" src="{{db.child('Users').child(post['uid']).get().val()['pfp']}}">
+					{% endif %}
+					</li>
+					<li class="article-li">
+						<div class="article-metadata">
+						<a href="#">{{ post["author"] }}</a>
+						<small class="text-muted">{{ post["timestamp"] }}</small>
+							{% if post["author"] == user['username'] %}
+							  <div>
+								<a class="btn btn-secondary" href="{{ url_for('update_post', post_id=post['postId']) }}">Update</a>
+								<a class="btn btn-danger btn-secondary" href="{{ url_for('delete_post', post_id=post['postId']) }}">Delete</a>
+							  </div>
+							{% endif %}
+						</div>
+					<h2 class="article-title">{{ post["title"] }}</h2>
+					<p class="article-content">{{ post["content"] }}</p>
+					</li>
+					{% if post["attachedImg"] != '' %}
+					<li class="article-li">
+						<img class="article-attached-img" src="{{post['attachedImg']}}">
+					</li>
+					{% endif %}
+				</ul>
+				</div>
+			</article>
+	{% endif %}
+{% endblock bodyContent %}

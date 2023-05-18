@@ -133,6 +133,7 @@ body {
 
 .article-title {
   color: #444444;
+  text-decoration: none;
 }
 
 a.article-title:hover {
@@ -154,6 +155,11 @@ a.article-title:hover {
   padding-bottom: 1px;
   margin-bottom: 4px;
   border-bottom: 1px solid #e3e3e3
+}
+
+.article-metadata a {
+  color: #428bca;
+  text-decoration: none;
 }
 
 .article-metadata a:hover {
