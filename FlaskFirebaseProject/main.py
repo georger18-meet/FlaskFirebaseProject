@@ -42,11 +42,12 @@ app.config['SECRET_KEY'] = 'e483ff5f4735476cf0e10c9b4f88e38d'
 @app.route('/home')
 def home():
     posts = db.child("Posts").get().val()
+    allUsers = db.child("Users")
     if login_session["user"] != None:
         currentUser = db.child("Users").child(login_session['user']['localId']).get().val()
     else:
         currentUser = None
-    return render_template('home.html', login_session = login_session, posts = posts, user = currentUser)
+    return render_template('home.html', login_session = login_session, posts = posts, user = currentUser, db = allUsers)
  
  
 @app.route('/about')
@@ -184,9 +185,10 @@ def new_post():
             title = request.form.get("title")
             content = request.form.get("content")
             username = currentUser["username"]
+            userID = login_session['user']['localId']
             nowtoday = datetime.now()
             timestamp = nowtoday.strftime("%d/%m/%Y %H:%M:%S")
-            post = {"title":title,"content":content,"author":username,"timestamp":timestamp}
+            post = {"title":title,"content":content,"author":username,"timestamp":timestamp, "uid":userID}
             print(post)
             db.child("Posts").push(post)
             flash(f'Your post was creted!', 'success')

@@ -10,14 +10,19 @@
 	{% if posts %}
 		{% for post in posts %}
 			<article class="media content-section">
-			  <div class="media-body">
-				<div class="article-metadata">
-				  <a href="#">{{ posts[post]["author"] }}</a>
-				  <small class="text-muted">{{ posts[post]["timestamp"] }}</small>
-				</div>
+				<div class="media-body">
+				{% if db.child('Users').child(posts[post]['uid']).get().val()['pfp'] == '' %}
+					<img class="rounded-circle article-img" src="{{ url_for('static', filename='pics/default-profile.jpg') }}">
+				{% else %}
+					<img class="rounded-circle article-img" src="{{db.child('Users').child(posts[post]['uid']).get().val()['pfp']}}">
+				{% endif %}
+					<div class="article-metadata">
+					  <a href="#">{{ posts[post]["author"] }}</a>
+					  <small class="text-muted">{{ posts[post]["timestamp"] }}</small>
+					</div>
 				<h2 class="article-title">{{ posts[post]["title"] }}</h2>
 				<p class="article-content">{{ posts[post]["content"] }}</p>
-			  </div>
+				</div>
 			</article>
 		{% endfor %}
 	{% endif %}
