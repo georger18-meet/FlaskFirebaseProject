@@ -11,17 +11,27 @@
 		{% for post in posts %}
 			<article class="media content-section">
 				<div class="media-body">
-				{% if db.child('Users').child(posts[post]['uid']).get().val()['pfp'] == '' %}
-					<img class="rounded-circle article-img" src="{{ url_for('static', filename='pics/default-profile.jpg') }}">
-				{% else %}
-					<img class="rounded-circle article-img" src="{{db.child('Users').child(posts[post]['uid']).get().val()['pfp']}}">
-				{% endif %}
-					<div class="article-metadata">
-					  <a href="#">{{ posts[post]["author"] }}</a>
-					  <small class="text-muted">{{ posts[post]["timestamp"] }}</small>
-					</div>
-				<h2 class="article-title">{{ posts[post]["title"] }}</h2>
-				<p class="article-content">{{ posts[post]["content"] }}</p>
+				<ul class="article-ul">
+					<li class="article-li">{% if db.child('Users').child(posts[post]['uid']).get().val()['pfp'] == '' %}
+						<img class="rounded-circle article-img" src="{{ url_for('static', filename='pics/default-profile.jpg') }}">
+					{% else %}
+						<img class="rounded-circle article-img" src="{{db.child('Users').child(posts[post]['uid']).get().val()['pfp']}}">
+					{% endif %}
+					</li>
+					<li class="article-li">
+						<div class="article-metadata">
+						  <a href="#">{{ posts[post]["author"] }}</a>
+						  <small class="text-muted">{{ posts[post]["timestamp"] }}</small>
+						</div>
+					<h2 class="article-title">{{ posts[post]["title"] }}</h2>
+					<p class="article-content">{{ posts[post]["content"] }}</p>
+					</li>
+					{% if posts[post]["attachedImg"] != '' %}
+					<li class="article-li">
+						<img class="article-attached-img" src="{{posts[post]['attachedImg']}}">
+					</li>
+					{% endif %}
+				</ul>
 				</div>
 			</article>
 		{% endfor %}

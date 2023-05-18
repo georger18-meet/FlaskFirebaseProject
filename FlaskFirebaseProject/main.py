@@ -188,9 +188,10 @@ def new_post():
             content = request.form.get("content")
             username = currentUser["username"]
             userID = login_session['user']['localId']
+            attachedImg = request.form.get("img")
             nowtoday = datetime.now()
             timestamp = nowtoday.strftime("%d/%m/%Y %H:%M:%S")
-            post = {"title":title,"content":content,"author":username,"timestamp":timestamp, "uid":userID}
+            post = {"title":title,"content":content,"author":username,"timestamp":timestamp, "uid":userID,"attachedImg":attachedImg}
             print(post)
             db.child("Posts").push(post)
             flash(f'Your post was creted!', 'success')

@@ -99,11 +99,11 @@ body {
   min-height: 40px;
   line-height: 20px;
   overflow-y: scroll;
+  background: #f1f1f1;
 }
 
-.textarea[contenteditable]:empty::before {
-  content: "Placeholder still possible";
-  color: gray;
+.textarea:focus{
+  background-color: #ddd;
 }
 
 
@@ -165,4 +165,12 @@ a.article-title:hover {
   width: 25px;
   height: 25px;
   vertical-align: middle;
+}
+
+.article-attached-img{
+	width: 50%;
+}
+
+.article-ul {
+	list-style-type: none;
 }
