@@ -41,13 +41,15 @@ app.config['SECRET_KEY'] = 'e483ff5f4735476cf0e10c9b4f88e38d'
 @app.route('/')  # '/' for the default page
 @app.route('/home')
 def home():
+    cu = None
     posts = db.child("Posts").get().val()
     allUsers = db.child("Users")
     if login_session["user"] != None:
-        currentUser = db.child("Users").child(login_session['user']['localId']).get().val()
+        print (db.child("Users").child(login_session['user']['localId']).get().val())
+        cu = db.child("Users").child(login_session['user']['localId']).get().val()
     else:
-        currentUser = None
-    return render_template('home.html', login_session = login_session, posts = posts, user = currentUser, db = allUsers)
+        cu = None
+    return render_template('home.html', login_session = login_session, posts = posts, user = cu, db = allUsers)
  
  
 @app.route('/about')
