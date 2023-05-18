@@ -5,6 +5,9 @@ import random
 import requests,json
 import pyrebase
 
+from datetime import datetime
+
+
 firebaseConfig = {
   "apiKey": "AIzaSyCD01SvtNWxOV_Mip7vOl3U374nXfzgrlU",
   "authDomain": "flaskfirebase-db196.firebaseapp.com",
@@ -21,6 +24,10 @@ auth = firebase.auth()
 db = firebase.database()
 currentUser = None
 
+formpy = ValidationForms("","","","")
+
+posts = None
+
 app = Flask(  # Create a flask app
 	__name__,
 	template_folder='templates',  # Name of html file folder
@@ -29,13 +36,13 @@ app = Flask(  # Create a flask app
 
 app.config['SECRET_KEY'] = 'e483ff5f4735476cf0e10c9b4f88e38d'
 
-formpy = ValidationForms("","","","")
 
 
 @app.route('/')  # '/' for the default page
 @app.route('/home')
 def home():
-    return render_template('home.html', login_session = login_session)
+    posts = db.child("Posts").get().val()
+    return render_template('home.html', login_session = login_session, posts = posts)
  
  
 @app.route('/about')
@@ -76,7 +83,6 @@ def signup():
             confirm_psw = request.form.get("confirm-psw")
             if formpy.ValidateSignUp(username,email,password,confirm_psw):            
                 try:
-                    
                     login_session["user"] = auth.create_user_with_email_and_password(request.form.get("email"),request.form.get("psw"))
                     user = {"fullname":fullname,"username":username,"email":email,"password":password,"pfp":""}
                     db.child("Users").child(login_session["user"]["localId"]).set(user)
@@ -163,6 +169,28 @@ def reauthenticate(reauth_email,reauth_password):
         print ("Reauthentication Failed")
         return False
      
+
+@app.route('/post/new', methods=['GET','POST'])
+def new_post():
+    if login_session["user"] != None:
+        currentUser = db.child("Users").child(login_session['user']['localId']).get().val()
+        if request.method == 'GET':
+            return render_template('create_post.html', login_session = login_session, title = "New Post", user = currentUser)
+        else:
+            title = request.form.get("title")
+            content = request.form.get("content")
+            username = currentUser["username"]
+            nowtoday = datetime.now()
+            timestamp = nowtoday.strftime("%d/%m/%Y %H:%M:%S")
+            post = {"title":title,"content":content,"author":username,"timestamp":timestamp}
+            print(post)
+            db.child("Posts").push(post)
+            flash(f'Your post has been creted!', 'success')
+            return redirect(url_for('home'))
+    else:
+        return redirect(url_for('home'))
+  
+
      
 if __name__ == "__main__":  # Makes sure this is the main process
     app.run( # Starts the site

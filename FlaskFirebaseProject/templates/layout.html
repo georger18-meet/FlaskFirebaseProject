@@ -33,6 +33,7 @@
 			<!-- Navbar Right Side -->
 			<div class="nav-li-right-div">
 				{% if login_session["user"] != None %}
+					<li class="nav-li nav-li-right"><a href="{{url_for('new_post')}}">New Post</a></li>
 					<li class="nav-li nav-li-right"><a href="{{url_for('account')}}">Account</a></li>
 					<li class="nav-li nav-li-right"><a href="{{url_for('logout')}}">Log Out</a></li>
 				{% else %}

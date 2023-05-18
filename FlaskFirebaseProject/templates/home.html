@@ -1,4 +1,13 @@
 {% extends "layout.html" %}
 {% block bodyContent %}
 	<h1>Hello There</h1>
+	
+	{% if posts %}
+		{% for post in posts %}
+			<h2>{{ posts[post]["title"] }}</h2>
+			<p>By {{ posts[post]["author"] }} on {{ posts[post]["timestamp"] }}</p>
+			<p>{{ posts[post]["content"] }}</p>
+		{% endfor %}
+	{% endif %}
+	
 {% endblock bodyContent %}

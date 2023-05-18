@@ -91,3 +91,18 @@ body {
 .closebtn:hover {
   color: grey;
 }
+
+.textarea {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  resize: height
+  min-height: 40px;
+  line-height: 20px;
+  overflow-y: scroll;
+}
+
+.textarea[contenteditable]:empty::before {
+  content: "Placeholder still possible";
+  color: gray;
+}

@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block headContent %}
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='signupstyle.css') }}">
+{% endblock headContent %}
+
+{% block bodyContent %}
+	<div class="content-section">
+		<h1>Create New Post</h1>
+		<form method="POST" action="">
+		    
+			<hr>
+			
+			<label for="title"><b>Title</b></label>
+			<input type="text" placeholder="Title" name="title" required>			
+			
+			<label for="content"><b>Content</b></label>			
+			<p><textarea class="textarea" placeholder="Content" name="content" maxlength="280" rows="5" required></textarea></p>
+	
+			<button type="submit" class="postbtn">Post</button>
+
+		</form>
+	</div>
+{% endblock bodyContent %}
