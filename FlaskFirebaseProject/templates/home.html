@@ -1,13 +1,24 @@
 {% extends "layout.html" %}
 {% block bodyContent %}
-	<h1>Hello There</h1>
-	
+
+	{% if user %}
+		<h1>Hello There {{ user["username"] }}!</h1>
+	{% else %}
+		<h1>Hello There Guest!</h1>
+	{% endif %}
+
 	{% if posts %}
 		{% for post in posts %}
-			<h2>{{ posts[post]["title"] }}</h2>
-			<p>By {{ posts[post]["author"] }} on {{ posts[post]["timestamp"] }}</p>
-			<p>{{ posts[post]["content"] }}</p>
+			<article class="media content-section">
+			  <div class="media-body">
+				<div class="article-metadata">
+				  <a href="#">{{ posts[post]["author"] }}</a>
+				  <small class="text-muted">{{ posts[post]["timestamp"] }}</small>
+				</div>
+				<h2 class="article-title">{{ posts[post]["title"] }}</h2>
+				<p class="article-content">{{ posts[post]["content"] }}</p>
+			  </div>
+			</article>
 		{% endfor %}
 	{% endif %}
-	
 {% endblock bodyContent %}

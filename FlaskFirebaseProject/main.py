@@ -42,7 +42,11 @@ app.config['SECRET_KEY'] = 'e483ff5f4735476cf0e10c9b4f88e38d'
 @app.route('/home')
 def home():
     posts = db.child("Posts").get().val()
-    return render_template('home.html', login_session = login_session, posts = posts)
+    if login_session["user"] != None:
+        currentUser = db.child("Users").child(login_session['user']['localId']).get().val()
+    else:
+        currentUser = None
+    return render_template('home.html', login_session = login_session, posts = posts, user = currentUser)
  
  
 @app.route('/about')
@@ -185,7 +189,7 @@ def new_post():
             post = {"title":title,"content":content,"author":username,"timestamp":timestamp}
             print(post)
             db.child("Posts").push(post)
-            flash(f'Your post has been creted!', 'success')
+            flash(f'Your post was creted!', 'success')
             return redirect(url_for('home'))
     else:
         return redirect(url_for('home'))
